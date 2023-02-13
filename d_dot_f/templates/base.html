@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="application-name" content="디닷에프">
+    <meta name="theme-color" content="#F15922">
+    <meta name="keywords" content="디닷에프,동국대학교,영화영상학과">
+    <meta name="format-detection" content="telephone=no">
+    <meta property="og:locale" content="ko-KR">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{% static 'images/d_dot_f_og.png' %}">
+    <meta property="og:image:secure_url" content="{% static 'images/d_dot_f_og.png' %}">
+    <meta property="og:site_name" content="디닷에프">
+    {% block meta %}{% endblock %}
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+        integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.10.5/dist/cdn.min.js"></script>
+    <script src="{% static 'js/alpine.js' %}"></script>
+    <!-- components JS -->
+    <script src="{% static 'js/components.js' %}"></script>
+    <!-- Swiper JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <!-- Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'favicon/apple-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'favicon/apple-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'favicon/apple-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'favicon/apple-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'favicon/apple-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'favicon/apple-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'favicon/apple-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'favicon/apple-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'favicon/android-icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'favicon/favicon-96x96.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon/manifest.json' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body class="antialiased font-pretendard bg-gray-100 overflow-auto">
+    <div class="flex flex-col h-screen justify-between">
+        <div>{% include "shared/_navbar.html" %}</div>
+        <div class="mb-auto">{% block body %}{% endblock %}</div>
+        <div>{% include "shared/_footer.html" %}</div>
+    </div>
+
+    <!-- notification -->
+    <div x-data="{ show: false }" aria-live="assertive"
+        class="pointer-events-none fixed inset-0 flex items-end z-30 px-4 py-6 sm:items-start sm:p-6" id="noti">
+        <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
+            <div x-show="show" x-transition:enter="transform ease-out duration-300 transition"
+                x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-flamingo-400 hidden" id="notiIconLocation"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium text-gray-900" id="notiTitle">알림 제목</p>
+                            <p class="mt-1 text-sm text-gray-500" id="notiContent">알림 내용</p>
+                        </div>
+                        <div class="ml-4 flex flex-shrink-0">
+                            <button type="button" @click="show = false"
+                                class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-flamingo-500 focus:ring-offset-2">
+                                <span class="sr-only">Close</span>
+                                <svg class="h-5 w-5" x-description="Heroicon name: mini/x-mark"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    aria-hidden="true">
+                                    <path
+                                        d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MS Internet Explorer not supported -->
+    <script>
+        (function msIeAlert() {
+            let agent = navigator.userAgent.toLowerCase();
+            if ((agent.indexOf("trident") || agent.indexOf("msie")) !== -1) {
+                alert("앗, 디닷에프는 MS Internet Explorer를 지원하지 않아요. 😭\n번거로우시겠지만 디닷에프에 최적화된 브라우저로 이용해주세요! 🙏\n\n권장 브라우저: Google Chrome, MS Edge");
+                document.body.setAttribute("style", "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);");
+                document.body.innerHTML = "<img src='{% static 'images/d_dot_f_logo.svg' %}' style='height: 3rem; text-align: center;' /><p style='margin-top: 1rem;'>앗, 디닷에프는 MS Internet Explorer를 지원하지 않아요. 😭<br>번거로우시겠지만 디닷에프에 최적화된 브라우저로 이용해주세요! 🙏<br><br>권장 브라우저: <a href='https://www.google.com/chrome/' style='color: #F15922;'>Google Chrome</a>, <a href='microsoft-edge:{{ request.build_absolute_uri }}' style='color: #F15922;'>MS Edge</a></p>";
+            }
+        })();
+    </script>
+    <script src="{% static 'js/secrets.js' %}"></script>
+    <script src="{% static 'js/datetime.js' %}"></script>
+    <script src="{% static 'js/noti.js' %}"></script>
+    <!-- FlareLane Web Push JS -->
+    <!-- <script src="https://cdn.flarelane.com/WebSDK.js"></script>
+    <script src="{% static 'push.js' %}"></script> -->
+</body>
+
+</html>

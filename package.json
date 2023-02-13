@@ -5,5 +5,8 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
     "tailwindcss": "^3.2.4"
+  },
+  "scripts": {
+    "css": "npx tailwindcss -i ./d_dot_f/static/css/input.css -o ./d_dot_f/static/css/output.css --watch"
   }
 }

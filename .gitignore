@@ -6,6 +6,7 @@ d_dot_f/static/css/output.css
 .gitconfig
 
 ### Secrets ###
+secrets.js
 secrets.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,django
