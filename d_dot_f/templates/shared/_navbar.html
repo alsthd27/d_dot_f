@@ -6,7 +6,7 @@
             <div
                 class="mx-auto flex max-w-7xl items-center justify-between py-5 px-6 sm:py-4 md:justify-start md:space-x-10 lg:px-8">
                 <div>
-                    <a href="#" class="flex">
+                    <a href="{% url 'home:home' %}" class="flex">
                         <span class="sr-only">디닷에프</span>
                         <svg class="h-8 w-auto sm:h-9" xmlns="http://www.w3.org/2000/svg"
                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 165.3 100"
@@ -233,10 +233,58 @@
                         <a href="#" class="text-base font-medium text-gray-500 hover:text-gray-900">동영링크</a>
                         <a href="#" class="text-base font-medium text-gray-500 hover:text-gray-900">공지사항</a>
                     </nav>
+                    {% if user.is_authenticated %}
+                    <div x-data="Components.menu({ open: false })" x-init="init()"
+                        @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)"
+                        class="z-20 relative flex-shrink-0">
+                        <div>
+                            <button type="button" class="bg-flamingo-500 flex text-sm rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-flamingo-500
+                                {% if not '/' == request.get_full_path %}
+                                focus:ring-offset-flamingo-800
+                                {% endif %}
+                                " id="user-menu-button" x-ref="button" @click="onButtonClick()"
+                                @keyup.space.prevent="onButtonEnter()" @keydown.enter.prevent="onButtonEnter()"
+                                aria-expanded="false" aria-haspopup="true" x-bind:aria-expanded="open.toString()"
+                                @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()">
+                                <span class="sr-only">회원 메뉴 열기</span>
+                                <img class="h-9 w-9 rounded-full"
+                                    src="{{ user.socialaccount_set.all.0.get_avatar_url }}"
+                                    alt="{{ user.metadata.name }}님의 프로필 사진">
+                            </button>
+                        </div>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                            x-ref="menu-items" x-description="Dropdown menu, show/hide based on menu state."
+                            x-bind:aria-activedescendant="activeDescendant" role="menu" aria-orientation="vertical"
+                            aria-labelledby="user-menu-button" tabindex="-1" @keydown.arrow-up.prevent="onArrowUp()"
+                            @keydown.arrow-down.prevent="onArrowDown()" @keydown.tab="open = false"
+                            @keydown.enter.prevent="open = false; focusButton()"
+                            @keyup.space.prevent="open = false; focusButton()" style="display: none;">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active"
+                                x-state:off="Not Active" :class="{ 'bg-gray-100': activeIndex === 0 }" role="menuitem"
+                                tabindex="-1" id="user-menu-item-0" @mouseenter="activeIndex = 0"
+                                @mouseleave="activeIndex = -1" @click="open = false; focusButton()">내 프로필</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700"
+                                :class="{ 'bg-gray-100': activeIndex === 1 }" role="menuitem" tabindex="-1"
+                                id="user-menu-item-1" @mouseenter="activeIndex = 1" @mouseleave="activeIndex = -1"
+                                @click="open = false; focusButton()">환경설정</a>
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-gray-700"
+                                :class="{ 'bg-gray-100': activeIndex === 2 }" role="menuitem" tabindex="-1"
+                                id="user-menu-item-2" @mouseenter="activeIndex = 2" @mouseleave="activeIndex = -1"
+                                @click="open = false; focusButton()">로그아웃</a>
+                        </div>
+                    </div>
+                    {% else %}
                     <div class="flex items-center md:ml-12">
-                        <a href="#"
+                        <a href="{% url 'account_login' %}"
                             class="inline-flex items-center justify-center rounded-md border border-transparent bg-flamingo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-flamingo-700">로그인</a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -354,8 +402,48 @@
                         <a href="#" class="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">공지사항</a>
                     </div>
                     <div class="mt-6">
-                        <a href="#"
+                        {% if user.is_authenticated %}
+                        <div class="flex items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <img class="h-10 w-10 rounded-full"
+                                    src="{{ user.socialaccount_set.all.0.get_avatar_url }}"
+                                    alt="{{ user.metadata.name }}님의 프로필 사진">
+                            </div>
+                            <div class="ml-3">
+                                <div class="text-base font-medium text-gray-800">{{ user.metadata.name }}</div>
+                                <div class="text-sm font-medium text-gray-500">{{ user.email }}</div>
+                            </div>
+                            <div class="ml-auto">
+                                <button type="button"
+                                    class="mr-3 flex-shrink-0 bg-white text-gray-500 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-flamingo-500">
+                                    <span class="sr-only">내 프로필</span>
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                        stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                                <button type="button"
+                                    class="flex-shrink-0 bg-white text-gray-500 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-flamingo-500">
+                                    <span class="sr-only">환경설정</span>
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                        stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <a href="{% url 'account_logout' %}"
+                            class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-flamingo-600 hover:bg-flamingo-700">
+                            로그아웃
+                        </a>
+                        {% else %}
+                        <a href="{% url 'account_login' %}"
                             class="flex w-full items-center justify-center rounded-md border border-transparent bg-flamingo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-flamingo-700">로그인</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

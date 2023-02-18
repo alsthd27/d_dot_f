@@ -54,9 +54,13 @@
 
 <body class="antialiased font-pretendard bg-gray-100 overflow-auto">
     <div class="flex flex-col h-screen justify-between">
+        {% if not 'accounts' in request.get_full_path %}
         <div>{% include "shared/_navbar.html" %}</div>
+        {% endif %}
         <div class="mb-auto">{% block body %}{% endblock %}</div>
+        {% if not 'accounts' in request.get_full_path %}
         <div>{% include "shared/_footer.html" %}</div>
+        {% endif %}
     </div>
 
     <!-- notification -->
@@ -88,7 +92,7 @@
                         <div class="ml-4 flex flex-shrink-0">
                             <button type="button" @click="show = false"
                                 class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-flamingo-500 focus:ring-offset-2">
-                                <span class="sr-only">Close</span>
+                                <span class="sr-only">닫기</span>
                                 <svg class="h-5 w-5" x-description="Heroicon name: mini/x-mark"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                     aria-hidden="true">

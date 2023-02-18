@@ -33,6 +33,24 @@ def get_secret(setting):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
+DISCORD_TOKEN = get_secret("DISCORD_TOKEN")
+
+DISCORD_MGT_WEBHOOK_URL = get_secret("DISCORD_MGT_WEBHOOK_URL")
+
+DISCORD_DEV_WEBHOOK_URL = get_secret("DISCORD_DEV_WEBHOOK_URL")
+
+NCP_ACCESS_KEY_ID = get_secret("NCP_ACCESS_KEY_ID")
+
+NCP_SECRET_KEY = get_secret("NCP_SECRET_KEY")
+
+NCP_SENS_SMS_SERVICE_ID = get_secret("NCP_SENS_SMS_SERVICE_ID")
+
+MGT_PHONE = get_secret("MGT_PHONE")
+
+DMD_URL = get_secret("DMD_URL")
+
+DMD_COOKIE = get_secret("DMD_COOKIE")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -48,7 +66,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.kakao",
+    "allauth.socialaccount.providers.naver",
     "home",
+    "member",
+    "utility",
 ]
 
 MIDDLEWARE = [
@@ -135,3 +162,79 @@ STATICFILES_DIRS = [BASE_DIR / "d_dot_f" / "static"]
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# django-allauth
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = "/"
+
+LOGOUT_REDIRECT_URL = "/"
+
+SESSION_COOKIE_AGE = 3600
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_SAVE_EVERY_REQUEST = True
+
+SOCIALACCOUNT_FORMS = {
+    "signup": "member.forms.SocialSignupForm",
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "PROCESS": "login",
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "offline",
+            "prompt": "select_account",
+        },
+    },
+    "kakao": {
+        "AUTH_PARAMS": {
+            "prompt": "login",
+        },
+    },
+    "naver": {
+        "AUTH_PARAMS": {
+            "auth_type": "reauthenticate",
+        },
+    },
+}
+
+SOCIALACCOUNT_AUTO_SIGNUP = False
+
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+SOCIALACCOUNT_LOGIN_ON_GET = True  # TODO: need to use POST request
+
+ACCOUNT_LOGOUT_ON_GET = True  # TODO: need to use POST request
+
+ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+# Email
+
+EMAIL_HOST = "smtp.gmail.com"
+
+EMAIL_PORT = "587"
+
+EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER")
+
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD")
+
+EMAIL_USE_TLS = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
