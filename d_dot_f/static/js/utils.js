@@ -214,8 +214,10 @@ function displayError(boolean, input, errorType) {
             input.classList.add("border-transparent");
         };
         if (errorType == "unchecked") {
-            subject = matchJosa(`'${findLabel(input)}'`, "을를", true);
-            narrativeClause = "체크해주세요.";
+            // subject = matchJosa(`'${findLabel(input)}'`, "을를", true);
+            // narrativeClause = "체크해주세요.";
+            subject = `${findLabel(input)}`.replace("합니다.", "해주세요.");
+            narrativeClause = "";
         } else if (errorType == "empty") {
             subject = matchJosa(findLabel(input), "을를", true);
             narrativeClause = "입력해주세요.";
@@ -382,7 +384,7 @@ function handleAjaxCallback(status, incomingData) {
             id_create_vcode.disabled = false;
         } else if (status == "duplicate sign up attempted") {
             freezeForm(false, inputs);
-            displayButtonMsg(true, id_create_vcode, "error", `앗, 이미 ${matchJosa(id_student_id.value, "라는이라는", true)} 학번으로 가입된 계정이 있어요!`);
+            displayButtonMsg(true, id_create_vcode, "error", `앗, 이미 ${id_student_id.value} 학번으로 가입된 계정이 있어요!`);
             displayButtonMsg(false, id_create_vcode, "descr");
             id_create_vcode.disabled = false;
         } else if (status == "the student id does not exist") {

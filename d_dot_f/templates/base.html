@@ -15,6 +15,9 @@
     <meta property="og:image" content="{% static 'images/d_dot_f_og.png' %}">
     <meta property="og:image:secure_url" content="{% static 'images/d_dot_f_og.png' %}">
     <meta property="og:site_name" content="디닷에프">
+    <meta property="og:title" content="디닷에프 | D-dot-f">
+    <meta property="og:description" content="동국대학교 영화영상학과 구성원을 위한 올인원 플랫폼입니다.">
+    <meta name="description" content="동국대학교 영화영상학과 구성원을 위한 올인원 플랫폼입니다.">
     {% block meta %}{% endblock %}
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
@@ -34,7 +37,7 @@
     <!-- Pretendard -->
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <!-- favicon -->
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'favicon/apple-icon-57x57.png' %}">
     <link rel="apple-touch-icon" sizes="60x60" href="{% static 'favicon/apple-icon-60x60.png' %}">
     <link rel="apple-touch-icon" sizes="72x72" href="{% static 'favicon/apple-icon-72x72.png' %}">
@@ -54,16 +57,12 @@
 
 <body class="antialiased font-pretendard bg-gray-100 overflow-auto">
     <div class="flex flex-col h-screen justify-between">
-        {% if not 'accounts' in request.get_full_path %}
         <div>{% include "shared/_navbar.html" %}</div>
-        {% endif %}
         <div class="mb-auto">{% block body %}{% endblock %}</div>
-        {% if not 'accounts' in request.get_full_path %}
         <div>{% include "shared/_footer.html" %}</div>
-        {% endif %}
     </div>
 
-    <!-- notification -->
+    <!-- Notification -->
     <div x-data="{ show: false }" aria-live="assertive"
         class="pointer-events-none fixed inset-0 flex items-end z-30 px-4 py-6 sm:items-start sm:p-6" id="noti">
         <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
@@ -86,8 +85,8 @@
                             </svg>
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
-                            <p class="text-sm font-medium text-gray-900" id="notiTitle">알림 제목</p>
-                            <p class="mt-1 text-sm text-gray-500" id="notiContent">알림 내용</p>
+                            <p class="text-sm font-medium text-gray-900" id="notiTitle">잠시만 기다려주세요!</p>
+                            <p class="mt-1 text-sm text-gray-500" id="notiContent">페이지를 불러오고 있어요.</p>
                         </div>
                         <div class="ml-4 flex flex-shrink-0">
                             <button type="button" @click="show = false"
@@ -108,17 +107,7 @@
         </div>
     </div>
 
-    <!-- MS Internet Explorer not supported -->
-    <script>
-        (function msIeAlert() {
-            let agent = navigator.userAgent.toLowerCase();
-            if ((agent.indexOf("trident") || agent.indexOf("msie")) !== -1) {
-                alert("앗, 디닷에프는 MS Internet Explorer를 지원하지 않아요. 😭\n번거로우시겠지만 디닷에프에 최적화된 브라우저로 이용해주세요! 🙏\n\n권장 브라우저: Google Chrome, MS Edge");
-                document.body.setAttribute("style", "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);");
-                document.body.innerHTML = "<img src='{% static 'images/d_dot_f_logo.svg' %}' style='height: 3rem; text-align: center;' /><p style='margin-top: 1rem;'>앗, 디닷에프는 MS Internet Explorer를 지원하지 않아요. 😭<br>번거로우시겠지만 디닷에프에 최적화된 브라우저로 이용해주세요! 🙏<br><br>권장 브라우저: <a href='https://www.google.com/chrome/' style='color: #F15922;'>Google Chrome</a>, <a href='microsoft-edge:{{ request.build_absolute_uri }}' style='color: #F15922;'>MS Edge</a></p>";
-            }
-        })();
-    </script>
+    <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/secrets.js' %}"></script>
     <script src="{% static 'js/datetime.js' %}"></script>
     <script src="{% static 'js/noti.js' %}"></script>

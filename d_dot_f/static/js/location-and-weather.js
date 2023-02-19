@@ -4,13 +4,14 @@ let cityName;
 let requestJson = {};
 let responseJson = {};
 
-weatherInfo = navigator.geolocation.watchPosition(getLongAndLatAndXyAndExecute, handleGeolocationError);
-setTimeout(() => {
-    navigator.geolocation.clearWatch(weatherInfo);
-}, 15000);
+// TODO: It's too slow.
+weatherInfo = navigator.geolocation.getCurrentPosition(getLongAndLatAndXyAndExecute, handleGeolocationError);
+// setTimeout(() => {
+//     navigator.geolocation.clearWatch(weatherInfo);
+// }, 10000);
 
 //
-// utility functions
+// sub functions
 //
 
 function handleGeolocationError(error) {
@@ -24,17 +25,16 @@ function handleGeolocationError(error) {
 }
 
 // #SOURCE: https://gist.github.com/fronteer-kr/14d7f779d52a21ac2f16
-// LCC DFS 좌표변환 ( code : "toXY"(위경도->좌표, latitude:위도, longitude:경도), "toLL"(좌표->위경도,latitude:x, longitude:y) )
-function dfs_xy_conv(code, longitude, latitude) {
-    // LCC DFS 좌표변환을 위한 기초 자료
-    let RE = 6371.00877; // 지구 반경(km)
-    let GRID = 5.0; // 격자 간격(km)
-    let SLAT1 = 30.0; // 투영 위도1(degree)
-    let SLAT2 = 60.0; // 투영 위도2(degree)
-    let OLON = 126.0; // 기준점 경도(degree)
-    let OLAT = 38.0; // 기준점 위도(degree)
-    let XO = 43; // 기준점 X좌표(GRID)
-    let YO = 136; // 기준점 Y좌표(GRID)
+// code: "toXY"(경위도->좌표, v1:경도, v2:위도), "toLL"(좌표->경위도, v1:y, v2:x)
+function dfs_xy_conv(code, v1, v2) {
+    let RE = 6371.00877;
+    let GRID = 5.0;
+    let SLAT1 = 30.0;
+    let SLAT2 = 60.0;
+    let OLON = 126.0;
+    let OLAT = 38.0;
+    let XO = 43;
+    let YO = 136;
 
     let DEGRAD = Math.PI / 180.0;
     let RADDEG = 180.0 / Math.PI;
@@ -53,21 +53,21 @@ function dfs_xy_conv(code, longitude, latitude) {
     ro = re * sf / Math.pow(ro, sn);
     let rs = {};
     if (code == "toXY") {
-        rs["lat"] = latitude;
-        rs["lng"] = longitude;
-        let ra = Math.tan(Math.PI * 0.25 + (latitude) * DEGRAD * 0.5);
+        rs["lng"] = v1;
+        rs["lat"] = v2;
+        let ra = Math.tan(Math.PI * 0.25 + (v2) * DEGRAD * 0.5);
         ra = re * sf / Math.pow(ra, sn);
-        let theta = longitude * DEGRAD - olon;
+        let theta = v1 * DEGRAD - olon;
         if (theta > Math.PI) theta -= 2.0 * Math.PI;
         if (theta < -Math.PI) theta += 2.0 * Math.PI;
         theta *= sn;
-        rs["x"] = Math.floor(ra * Math.sin(theta) + XO + 0.5);
         rs["y"] = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+        rs["x"] = Math.floor(ra * Math.sin(theta) + XO + 0.5);
     } else {
-        rs["x"] = latitude;
-        rs["y"] = longitude;
-        let xn = latitude - XO;
-        let yn = ro - longitude + YO;
+        rs["y"] = v1;
+        rs["x"] = v2;
+        let xn = v2 - XO;
+        let yn = ro - v1 + YO;
         ra = Math.sqrt(xn * xn + yn * yn);
         if (sn < 0.0) - ra;
         let alat = Math.pow((re * sf / ra), (1.0 / sn));
@@ -81,8 +81,8 @@ function dfs_xy_conv(code, longitude, latitude) {
             } else theta = Math.atan2(xn, yn);
         };
         let alon = theta / sn + olon;
-        rs["lat"] = alat * RADDEG;
         rs["lng"] = alon * RADDEG;
+        rs["lat"] = alat * RADDEG;
     };
     return rs;
 }
@@ -170,6 +170,19 @@ function getBaseDateTime(apiType) {
         } else if (sh("2310") <= sh(hhmm)) {
             baseTime = "2300";
         };
+    } else if (apiType == "short-term-TMX") {
+        if (sh(hhmm) < sh("0210")) {
+            baseDate = yyyymmddOfYesterday;
+            baseTime = "2300";
+        } else if (sh("0210") <= sh(hhmm) && sh(hhmm) < sh("0510")) {
+            baseTime = "0200";
+        } else if (sh("0510") <= sh(hhmm) && sh(hhmm) < sh("0810")) {
+            baseTime = "0500";
+        } else if (sh("0810") <= sh(hhmm) && sh(hhmm) < sh("1110")) {
+            baseTime = "0800";
+        } else if (sh("1110") <= sh(hhmm)) {
+            baseTime = "1100";
+        };
     };
     return { "baseDate": baseDate, "baseTime": baseTime };
 }
@@ -214,7 +227,7 @@ function getAddress(longitude, latitude) {
 function getUltraShortTermForecast(x, y) {
     requestJson.name = "getUltraShortTermForecast";
     requestJson.url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
-    requestJson.data = { serviceKey: `${PublicDataServiceKey}`, base_date: getBaseDateTime("ultra-short-term").baseDate, base_time: getBaseDateTime("ultra-short-term").baseTime, nx: x, ny: y };
+    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: getBaseDateTime("ultra-short-term").baseDate, base_time: getBaseDateTime("ultra-short-term").baseTime, nx: x, ny: y };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);
@@ -223,7 +236,7 @@ function getUltraShortTermForecast(x, y) {
 function getShortTermForecast(x, y) {
     requestJson.name = "getShortTermForecast";
     requestJson.url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-    requestJson.data = { serviceKey: `${PublicDataServiceKey}`, base_date: getBaseDateTime("short-term").baseDate, base_time: getBaseDateTime("short-term").baseTime, nx: x, ny: y };
+    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: getBaseDateTime("short-term").baseDate, base_time: getBaseDateTime("short-term").baseTime, nx: x, ny: y };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);
@@ -232,7 +245,7 @@ function getShortTermForecast(x, y) {
 function getMaxTemperature(x, y) {
     requestJson.name = "getMaxTemperature";
     requestJson.url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-    requestJson.data = { serviceKey: `${PublicDataServiceKey}`, base_date: getBaseDateTime("short-term").baseDate, base_time: getBaseDateTime("short-term").baseTime, nx: x, ny: y, numOfRows: 290 };
+    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: getBaseDateTime("short-term-TMX").baseDate, base_time: getBaseDateTime("short-term-TMX").baseTime, nx: x, ny: y, numOfRows: 290 };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);
@@ -241,7 +254,7 @@ function getMaxTemperature(x, y) {
 function getMinTemperature(x, y) {
     requestJson.name = "getMinTemperature";
     requestJson.url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-    requestJson.data = { serviceKey: `${PublicDataServiceKey}`, base_date: yyyymmddOfBeforeYesterday, base_time: 2300, nx: x, ny: y, numOfRows: 290 };
+    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: yyyymmddOfBeforeYesterday, base_time: 2300, nx: x, ny: y, numOfRows: 290 };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);
@@ -250,7 +263,7 @@ function getMinTemperature(x, y) {
 function getSunriseSunset(cityName) {
     requestJson.name = "getSunriseSunset";
     requestJson.url = "http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo";
-    requestJson.data = { location: `${cityName}`, locdate: yyyymmdd, ServiceKey: `${PublicDataServiceKey}` };
+    requestJson.data = { location: `${cityName}`, locdate: yyyymmdd, ServiceKey: `${publicDataServiceKey}` };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);

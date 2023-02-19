@@ -1,3 +1,5 @@
+const csrftoken = getCookie("csrftoken");
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -12,10 +14,11 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-var csrftoken = getCookie("csrftoken");
+
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 $.ajaxSetup({
     beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
