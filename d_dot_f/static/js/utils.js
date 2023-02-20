@@ -334,7 +334,7 @@ function makeAjaxCall(callType) {
             console.log(status);
             handleAjaxCallback(status, incomingData);
         },
-        error: function () {
+        error: function (error) {
             if (checkPathname("signup")) {
                 callType == "create vcode" ?
                     status = "failed to create vcode" :
@@ -349,6 +349,7 @@ function makeAjaxCall(callType) {
                         status = "an unknown error occurred";
             };
             console.log(status);
+            console.log(error);
             handleAjaxCallback(status);
         },
         complete: function () {
