@@ -15,7 +15,7 @@ dmd_cookie = getattr(settings, "DMD_COOKIE", "DMD_COOKIE")
 notion_secret = getattr(settings, "NOTION_SECRET", "NOTION_SECRET")
 notion_db_id = getattr(settings, "NOTION_DB_ID", "NOTION_DB_ID")
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
 }
 notion_headers = {
     "Authorization": f"Bearer {notion_secret}",
@@ -265,7 +265,7 @@ def update_dmd_cookie(request):
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
-        session.get("https://mdrims.dongguk.edu", headers=headers)
+        session.get("https://mdrims.dongguk.edu", headers=headers, verify=False)
         cookie = session.cookies.get_dict()
         wmonid = cookie["WMONID"]
         jsessionid = cookie["JSESSIONID"]
