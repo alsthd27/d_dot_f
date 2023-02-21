@@ -7,6 +7,7 @@ from .d_discord import send_msg
 from .d_mail import send_mail
 from .d_sms import send_sms
 import json, re, random, string, requests
+from requests.adapters import HTTPAdapter, Retry
 
 
 dmd_url = getattr(settings, "DMD_URL", "DMD_URL")
@@ -259,7 +260,11 @@ def get_cleaned_notion_data(str_db_name):
 
 def update_dmd_cookie(request):
     if "23:59" < timezone.now().strftime("%H:%M") < "00:01":
-        session = requests.session()
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         session.get("https://mdrims.dongguk.edu", headers=headers)
         cookie = session.cookies.get_dict()
         wmonid = cookie["WMONID"]
