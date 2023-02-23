@@ -183,6 +183,16 @@ function getBaseDateTime(apiType) {
         } else if (sh("1110") <= sh(hhmm)) {
             baseTime = "1100";
         };
+    } else if (apiType == "short-term-TMN") {
+        if (sh(hhmm) < sh("0210")) {
+            baseDate = yyyymmddOfBeforeYesterday;
+            baseTime = "2300";
+        } else if (sh("0210") <= sh(hhmm) && sh(hhmm) < sh("1110")) {
+            baseDate = yyyymmddOfYesterday;
+            baseTime = "2300";
+        } else if (sh("1110") <= sh(hhmm)) {
+            baseTime = "0200";
+        };
     };
     return { "baseDate": baseDate, "baseTime": baseTime };
 }
@@ -254,7 +264,7 @@ function getMaxTemperature(x, y) {
 function getMinTemperature(x, y) {
     requestJson.name = "getMinTemperature";
     requestJson.url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: yyyymmddOfBeforeYesterday, base_time: 2300, nx: x, ny: y, numOfRows: 290 };
+    requestJson.data = { serviceKey: `${publicDataServiceKey}`, base_date: getBaseDateTime("short-term-TMN").baseDate, base_time: getBaseDateTime("short-term-TMN").baseTime, nx: x, ny: y, numOfRows: 290 };
     requestJson.async = false;
     requestJson.headers = null;
     makeAjaxCall(requestJson);

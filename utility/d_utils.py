@@ -6,7 +6,6 @@ from member.models import Vcode
 from .d_discord import send_msg
 from .d_mail import send_mail
 from .d_sms import send_sms
-from bs4 import BeautifulSoup
 import json, re, random, string, requests
 
 
@@ -260,24 +259,8 @@ def get_cleaned_notion_data(str_db_name):
 
 def update_dmd_cookie(request):
     if "23:59" < timezone.now().strftime("%H:%M") < "00:01":
-        proxy = None
-        proxy_url = "https://free-proxy-list.net/"
-        proxy_res = requests.get(proxy_url)
-        proxy_html = proxy_res.content.decode("utf-8", "replace")
-        soup = BeautifulSoup(proxy_html, "lxml")
-        tbody = soup.select('table[class="table table-striped table-bordered"]')[
-            0
-        ].contents[1]
-        rows = tbody.find_all("tr")
-        country = "Korea"
-        port = "80"
-        for row in rows:
-            tds = row.find_all("td")
-            if tds[3].text == country and tds[1].text == port:
-                free_proxy = tds[0].text
-                proxy = {"https": free_proxy, "http": free_proxy}
         session = requests.session()
-        session.get("https://mdrims.dongguk.edu", headers=headers, proxies=proxy)
+        session.get("https://mdrims.dongguk.edu", headers=headers)
         cookie = session.cookies.get_dict()
         wmonid = cookie["WMONID"]
         jsessionid = cookie["JSESSIONID"]
