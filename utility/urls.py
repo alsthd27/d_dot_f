@@ -4,7 +4,6 @@ from .views import test
 
 app_name = "utility"
 urlpatterns = [
-    path("test", test),
     path("create-vcode", create_vcode, name="create_vcode"),
     path("confirm-vcode", confirm_vcode, name="confirm_vcode"),
     path("update-dmd-cookie", update_dmd_cookie, name="update_dmd_cookie"),

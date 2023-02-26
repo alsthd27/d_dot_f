@@ -5,8 +5,6 @@
 # from .d_mail import send_mail
 # from .d_sms import send_sms
 # import json, re, datetime, random, string
-from django.http import HttpResponse
-import requests, json
 
 
 # def create_vcode(request):
@@ -143,19 +141,3 @@ import requests, json
 #         result = False
 #     boolean_result = result
 #     return boolean_result
-
-
-def test(request):
-    session = requests.session()
-    session.get("https://mdrims.dongguk.edu", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"})
-    cookie = session.cookies.get_dict()
-    wmonid = cookie["WMONID"]
-    jsessionid = cookie["JSESSIONID"]
-    cookie = f"WMONID={wmonid}; JSESSIONID={jsessionid}"
-    with open("secrets.json", "r+") as f:
-        data = json.load(f)
-        data["DMD_COOKIE"] = cookie
-        f.seek(0)
-        f.write(json.dumps(data, indent=4))
-        f.truncate()
-    return HttpResponse(status=200)
