@@ -145,7 +145,7 @@ import requests, json
 #     return boolean_result
 
 
-def update_dmd_cookie(request):
+def test(request):
     session = requests.session()
     session.get("https://mdrims.dongguk.edu", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"})
     cookie = session.cookies.get_dict()
