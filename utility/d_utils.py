@@ -259,8 +259,7 @@ def get_cleaned_notion_data(str_db_name):
 
 def update_dmd_cookie(request):
     if "23:59" < timezone.now().strftime("%H:%M") < "00:01":
-        session = requests.session()
-        response = session.get("https://dgufilm.link/get-dmd-cookie")
+        response = requests.get("https://dgufilm.link/get-dmd-cookie")
         cookie = response.text.rstrip()
         if "WMONID" in cookie:
             with open("secrets.json", "r+") as f:
