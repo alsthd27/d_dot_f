@@ -261,13 +261,14 @@ def update_dmd_cookie(request):
     if "23:59" < timezone.now().strftime("%H:%M") < "00:01":
         session = requests.session()
         response = session.get("https://dgufilm.link/get-dmd-cookie")
-        cookie = response.text
-        with open("secrets.json", "r+") as f:
-            data = json.load(f)
-            data["DMD_COOKIE"] = cookie
-            f.seek(0)
-            f.write(json.dumps(data, indent=4))
-            f.truncate()
+        cookie = response.text.rstrip()
+        if "WMONID" in cookie:
+            with open("secrets.json", "r+") as f:
+                data = json.load(f)
+                data["DMD_COOKIE"] = cookie
+                f.seek(0)
+                f.write(json.dumps(data, indent=4))
+                f.truncate()
     return HttpResponse(status=200)
 
 
