@@ -1,4 +1,4 @@
-var swiper = new Swiper(".mySwiper", {
+let swiper = new Swiper(".mySwiper", {
     effect: "fade",
     speed: 1000,
     slidesPerView: 1,
