@@ -18,7 +18,7 @@ secrets.json
 *.pyc
 __pycache__/
 migrations/
-utility/tests.py
+tests.py
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
